@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة الإدارة - ماتريالك</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <script type="module" src="admin.js" defer></script>
+  <style>
+    body { font-family: 'Tajawal', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- الهيدر -->
+  <header class="gradient-bg text-white py-6">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold">لوحة الإدارة</h1>
+        <div class="flex items-center space-x-4 space-x-reverse">
+          <span id="adminName">المدير</span>
+          <button id="logoutBtn" class="bg-white text-indigo-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition">
+            تسجيل الخروج
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- التنقل -->
+  <nav class="bg-white shadow-sm border-b">
+    <div class="container mx-auto px-4">
+      <div class="flex space-x-8 space-x-reverse">
+        <button id="materialsTab" class="py-4 px-2 border-b-2 border-indigo-500 text-indigo-600 font-medium">
+          📘 إدارة المواد
+        </button>
+        <button id="usersTab" class="py-4 px-2 border-b-2 border-transparent text-gray-600 hover:text-indigo-600 transition">
+          👥 إدارة المستخدمين
+        </button>
+        <button id="accessTab" class="py-4 px-2 border-b-2 border-transparent text-gray-600 hover:text-indigo-600 transition">
+          🔐 إدارة الصلاحيات
+        </button>
+        <button id="statsTab" class="py-4 px-2 border-b-2 border-transparent text-gray-600 hover:text-indigo-600 transition">
+          📊 الإحصائيات
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- المحتوى الرئيسي -->
+  <main class="container mx-auto px-4 py-8">
+    <!-- قسم إدارة المواد -->
+    <div id="materialsSection" class="space-y-6">
+      <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-bold">إدارة المواد</h2>
+        <button id="addMaterialBtn" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
+          ➕ إضافة مادة جديدة
+        </button>
+      </div>
+
+      <!-- نموذج إضافة مادة -->
+      <div id="addMaterialForm" class="bg-white p-6 rounded-lg shadow-md hidden">
+        <h3 class="text-xl font-bold mb-4">إضافة مادة جديدة</h3>
+        <form id="materialForm" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">العنوان</label>
+              <input type="text" id="materialTitle" required class="w-full px-4 py-2 border rounded-lg">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">النوع</label>
+              <select id="materialType" required class="w-full px-4 py-2 border rounded-lg">
+                <option value="ماتريال">ماتريال</option>
+                <option value="مشروع">مشروع</option>
+                <option value="بريزنتيشن">بريزنتيشن</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">المادة الدراسية</label>
+              <input type="text" id="materialSubject" class="w-full px-4 py-2 border rounded-lg">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">السعر (جنيه)</label>
+              <input type="number" id="materialPrice" required class="w-full px-4 py-2 border rounded-lg">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">رابط الملف</label>
+              <input type="url" id="materialLink" required class="w-full px-4 py-2 border rounded-lg">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">رابط الصورة</label>
+              <input type="url" id="materialImage" class="w-full px-4 py-2 border rounded-lg">
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+              حفظ
+            </button>
+            <button type="button" id="cancelMaterialBtn" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition">
+              إلغاء
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- قائمة المواد -->
+      <div id="materialsList" class="bg-white rounded-lg shadow-md">
+        <div class="p-6 border-b">
+          <h3 class="text-xl font-bold">المواد المتاحة</h3>
+        </div>
+        <div class="p-6">
+          <div id="materialsTable" class="space-y-4">
+            <p class="text-gray-500 text-center">جاري التحميل...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- قسم إدارة المستخدمين -->
+    <div id="usersSection" class="space-y-6 hidden">
+      <h2 class="text-2xl font-bold">إدارة المستخدمين</h2>
+      <div class="bg-white rounded-lg shadow-md">
+        <div class="p-6 border-b">
+          <h3 class="text-xl font-bold">المستخدمين المسجلين</h3>
+        </div>
+        <div class="p-6">
+          <div id="usersTable" class="space-y-4">
+            <p class="text-gray-500 text-center">جاري التحميل...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- قسم إدارة الصلاحيات -->
+    <div id="accessSection" class="space-y-6 hidden">
+      <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-bold">إدارة الصلاحيات</h2>
+        <button id="addAccessBtn" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
+          ➕ منح صلاحية
+        </button>
+      </div>
+
+      <!-- نموذج منح صلاحية -->
+      <div id="addAccessForm" class="bg-white p-6 rounded-lg shadow-md hidden">
+        <h3 class="text-xl font-bold mb-4">منح صلاحية جديدة</h3>
+        <form id="accessForm" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">رقم الهاتف</label>
+              <input type="tel" id="accessPhone" required placeholder="+201234567890" class="w-full px-4 py-2 border rounded-lg">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">المادة</label>
+              <select id="accessMaterial" required class="w-full px-4 py-2 border rounded-lg">
+                <option value="">اختر المادة</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+              منح الصلاحية
+            </button>
+            <button type="button" id="cancelAccessBtn" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition">
+              إلغاء
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- قائمة الصلاحيات -->
+      <div class="bg-white rounded-lg shadow-md">
+        <div class="p-6 border-b">
+          <h3 class="text-xl font-bold">الصلاحيات الممنوحة</h3>
+        </div>
+        <div class="p-6">
+          <div id="accessTable" class="space-y-4">
+            <p class="text-gray-500 text-center">جاري التحميل...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- قسم الإحصائيات -->
+    <div id="statsSection" class="space-y-6 hidden">
+      <h2 class="text-2xl font-bold">الإحصائيات</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <div class="flex items-center">
+            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+            </div>
+            <div class="mr-4">
+              <p class="text-sm text-gray-600">إجمالي المواد</p>
+              <p class="text-2xl font-bold" id="totalMaterials">0</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <div class="flex items-center">
+            <div class="p-3 rounded-full bg-green-100 text-green-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              </svg>
+            </div>
+            <div class="mr-4">
+              <p class="text-sm text-gray-600">إجمالي المستخدمين</p>
+              <p class="text-2xl font-bold" id="totalUsers">0</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <div class="flex items-center">
+            <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <div class="mr-4">
+              <p class="text-sm text-gray-600">الصلاحيات الممنوحة</p>
+              <p class="text-2xl font-bold" id="totalAccess">0</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <div class="flex items-center">
+            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+              </svg>
+            </div>
+            <div class="mr-4">
+              <p class="text-sm text-gray-600">إجمالي المبيعات</p>
+              <p class="text-2xl font-bold" id="totalSales">0 جنيه</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
